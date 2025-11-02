@@ -1,13 +1,34 @@
-// Use JavaScript to dynamically load the navbar
+// ===============================
+// DYNAMIC NAVBAR LOADER
+// ===============================
 const navbarContainer = document.getElementById("navbar-container");
+
+// Hardcoded absolute path to your navbar on GitHub Pages
+const navbarURL = "https://michaelwoodc.github.io/IT-Infrastructure/navbar.html";
+
 const xhr = new XMLHttpRequest();
-xhr.open("GET", "/navbar.html", true); // Adjust the path to navbar.html
+xhr.open("GET", navbarURL, true);
 xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-        navbarContainer.innerHTML = xhr.responseText;
+    if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+            navbarContainer.innerHTML = xhr.responseText;
+
+            // Optional: Fix navbar links to always be relative to root
+            navbarContainer.querySelectorAll("a").forEach(link => {
+                const href = link.getAttribute("href");
+                if (href && !href.startsWith("http") && !href.startsWith("#")) {
+                    // Make all relative links point to GitHub Pages root
+                    link.setAttribute("href", "https://michaelwoodc.github.io/IT-Infrastructure/" + href.replace(/^\.?\//, ""));
+                }
+            });
+
+        } else {
+            console.error("Failed to load navbar.html:", xhr.status);
+        }
     }
 };
 xhr.send();
+
 
 let slideIndex = 1;
 showSlides(slideIndex);
