@@ -1,13 +1,34 @@
 // Use JavaScript to dynamically load the navbar
+// ===============================
+// DYNAMIC NAVBAR LOADER
+// ===============================
 const navbarContainer = document.getElementById("navbar-container");
+
+// Root-relative path works locally and on GitHub Pages
+const navbarPath = "/navbar.html";
+
 const xhr = new XMLHttpRequest();
-xhr.open("GET", "michaelwoodc.github.io/IT-Infrastructure/navbar.html", true); // Adjust the path to navbar.html
+xhr.open("GET", navbarPath, true);
 xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-        navbarContainer.innerHTML = xhr.responseText;
+    if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+            navbarContainer.innerHTML = xhr.responseText;
+
+            // Fix navbar links to be relative to root
+            navbarContainer.querySelectorAll("a").forEach(link => {
+                const href = link.getAttribute("href");
+                if (href && !href.startsWith("http") && !href.startsWith("#") && !href.startsWith("/")) {
+                    link.setAttribute("href", "/" + href.replace(/^\/+/, ""));
+                }
+            });
+
+        } else {
+            console.error("Failed to load navbar.html:", xhr.status);
+        }
     }
 };
 xhr.send();
+
 
 let slideIndex = 1;
 showSlides(slideIndex);
