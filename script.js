@@ -2,20 +2,37 @@
 // DYNAMIC NAVBAR LOADER
 // ===============================
 // Hardcoded relative path (works on GitHub Pages & locally)
+// ===============================
+// DYNAMIC NAVBAR LOADER
+// ===============================
 const navbarContainer = document.getElementById("navbar-container");
 
+// Navbar is in the root of the repo
+const navbarPath = "/navbar.html"; // leading / = root of the site
+
 const xhr = new XMLHttpRequest();
-xhr.open("GET", "navbar.html", true); // <-- navbar.html must exist in the same folder as your page
+xhr.open("GET", navbarPath, true);
 xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
             navbarContainer.innerHTML = xhr.responseText;
+
+            // Fix all links to be relative to root
+            navbarContainer.querySelectorAll("a").forEach(link => {
+                const href = link.getAttribute("href");
+                if (href && !href.startsWith("http") && !href.startsWith("#") && !href.startsWith("/")) {
+                    // Prepend root slash to make it root-relative
+                    link.setAttribute("href", "/" + href.replace(/^\/+/, ""));
+                }
+            });
+
         } else {
             console.error("Failed to load navbar.html:", xhr.status);
         }
     }
 };
 xhr.send();
+
 
 
 
