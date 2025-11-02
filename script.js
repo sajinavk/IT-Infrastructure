@@ -1,35 +1,22 @@
 // ===============================
 // DYNAMIC NAVBAR LOADER
 // ===============================
+// Hardcoded relative path (works on GitHub Pages & locally)
 const navbarContainer = document.getElementById("navbar-container");
 
-// Define your base URL for your site
-// For local dev, change it to your local server path if needed
-const baseURL = "https://michaelwoodc.github.io/IT-Infrastructure/";
-
-// Load navbar.html dynamically
 const xhr = new XMLHttpRequest();
-xhr.open("GET", baseURL + "navbar.html", true);
+xhr.open("GET", "navbar.html", true); // <-- navbar.html must exist in the same folder as your page
 xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
             navbarContainer.innerHTML = xhr.responseText;
-
-            // Fix all relative links in the navbar
-            navbarContainer.querySelectorAll("a").forEach(link => {
-                let href = link.getAttribute("href");
-                if (href && !href.startsWith("http") && !href.startsWith("#")) {
-                    // Make the href absolute using baseURL
-                    link.setAttribute("href", baseURL + href.replace(/^\/+/, ""));
-                }
-            });
-
         } else {
             console.error("Failed to load navbar.html:", xhr.status);
         }
     }
 };
 xhr.send();
+
 
 
 // ===============================
