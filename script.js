@@ -1,98 +1,128 @@
-// ===============================
-// DYNAMIC NAVBAR LOADER
-// ===============================
-// Hardcoded relative path (works on GitHub Pages & locally)
-// ===============================
-// DYNAMIC NAVBAR LOADER
-// ===============================
+// Use JavaScript to dynamically load the navbar
 const navbarContainer = document.getElementById("navbar-container");
-
-// Navbar is in the root of the repo
-const navbarPath = "/navbar.html"; // leading / = root of the site
-
 const xhr = new XMLHttpRequest();
-xhr.open("GET", navbarPath, true);
+xhr.open("GET", "michaelwoodc.github.io/IT-Infrastructure/navbar.html", true); // Adjust the path to navbar.html
 xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-            navbarContainer.innerHTML = xhr.responseText;
-
-            // Fix all links to be relative to root
-            navbarContainer.querySelectorAll("a").forEach(link => {
-                const href = link.getAttribute("href");
-                if (href && !href.startsWith("http") && !href.startsWith("#") && !href.startsWith("/")) {
-                    // Prepend root slash to make it root-relative
-                    link.setAttribute("href", "/" + href.replace(/^\/+/, ""));
-                }
-            });
-
-        } else {
-            console.error("Failed to load navbar.html:", xhr.status);
-        }
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        navbarContainer.innerHTML = xhr.responseText;
     }
 };
 xhr.send();
 
-
-
-
-// ===============================
-// SLIDESHOW FUNCTIONS
-// ===============================
 let slideIndex = 1;
 showSlides(slideIndex);
 
-function plusSlides(n) {
-    showSlides(slideIndex += n);
-}
+// function plusSlides(n) {
+//   showSlides(slideIndex += n);
+// }
 
-function currentSlide(n) {
-    showSlides(slideIndex = n);
-}
+// function currentSlide(n) {
+//   showSlides(slideIndex = n);
+// }
 
 function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
+  let codeBoxes = document.getElementsByClassName("code-section");
+
+  if (n > slides.length) { slideIndex = 1 }
+  if (n < 1) { slideIndex = slides.length }
+
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+    if (codeBoxes[i]) {
+      codeBoxes[i].style.display = "none";
+    }
+  }
+
+  for (i = 0; dots && i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+
+  if (dots && dots[slideIndex - 1]) {
+    dots[slideIndex - 1].className += " active";
+  }
+
+  if (slides[slideIndex - 1]) {
+    slides[slideIndex - 1].style.display = "block";
+    if (codeBoxes[slideIndex - 1] && codeBoxes[slideIndex - 1].querySelector('textarea').value.trim() !== "") {
+      codeBoxes[slideIndex - 1].style.display = "block";
+    }
+
+    // Center the new slide on the page
+    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = slides[slideIndex - 1].getBoundingClientRect().top + scrollY;
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
+  }
+  }
+
+    // Function to copy code to clipboard
+    function copyCode(slideNumber) {
+      let codeTextarea = document.querySelectorAll('.code-section textarea')[slideNumber - 1];
+      let codeContent = codeTextarea.value.trim();
+
+      if (codeContent !== "") {
+        navigator.clipboard.writeText(codeContent).then(function() {
+          alert('Code copied to clipboard!');
+        }).catch(function(err) {
+          console.error('Unable to copy to clipboard', err);
+        });
+      }
+    }
+
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+  function currentSlide(n) {
+    showSlides(slideIndex = n);
+  }
+
+  function showSlides(n) {
     let i;
-    const slides = document.getElementsByClassName("mySlides");
-    const dots = document.getElementsByClassName("dot");
-    const codeBoxes = document.getElementsByClassName("code-section");
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("dot");
+    let codeBoxes = document.getElementsByClassName("code-section");
 
     if (n > slides.length) { slideIndex = 1 }
     if (n < 1) { slideIndex = slides.length }
 
     for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-        if (codeBoxes[i]) codeBoxes[i].style.display = "none";
+      slides[i].style.display = "none";
+      if (codeBoxes[i]) {
+        codeBoxes[i].style.display = "none";
+      }
     }
 
     for (i = 0; dots && i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" active", "");
+      dots[i].className = dots[i].className.replace(" active", "");
     }
 
-    if (dots && dots[slideIndex - 1]) dots[slideIndex - 1].className += " active";
+    if (dots && dots[slideIndex - 1]) {
+      dots[slideIndex - 1].className += " active";
+    }
 
     if (slides[slideIndex - 1]) {
-        slides[slideIndex - 1].style.display = "block";
-        if (codeBoxes[slideIndex - 1] && codeBoxes[slideIndex - 1].querySelector('textarea').value.trim() !== "") {
-            codeBoxes[slideIndex - 1].style.display = "block";
-        }
-
-        // Center the new slide on the page
-        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        const targetY = slides[slideIndex - 1].getBoundingClientRect().top + scrollY;
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      slides[slideIndex - 1].style.display = "block";
+      if (codeBoxes[slideIndex - 1] && codeBoxes[slideIndex - 1].querySelector('textarea').value.trim() !== "") {
+        codeBoxes[slideIndex - 1].style.display = "block";
+      }
     }
-}
+  }
 
-// ===============================
-// COPY CODE FUNCTION
-// ===============================
-function copyCode(slideNumber) {
-    const codeTextarea = document.querySelectorAll('.code-section textarea')[slideNumber - 1];
-    const codeContent = codeTextarea.value.trim();
+  // Function to copy code to clipboard
+  function copyCode(slideNumber) {
+    let codeTextarea = document.querySelectorAll('.code-section textarea')[slideNumber - 1];
+    let codeContent = codeTextarea.value.trim();
 
     if (codeContent !== "") {
-        navigator.clipboard.writeText(codeContent)
-            .then(() => alert('Code copied to clipboard!'))
-            .catch(err => console.error('Unable to copy to clipboard', err));
+      navigator.clipboard.writeText(codeContent).then(function() {
+        alert('Code copied to clipboard!');
+      }).catch(function(err) {
+        console.error('Unable to copy to clipboard', err);
+      });
     }
-}
+  }
